@@ -1,4 +1,3 @@
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -19,14 +18,7 @@ public class CarController : MonoBehaviour
     private float ThrustInput; // "w/space"positive   "s"negative
     private float RotateInput; // "A/D"
 
-    void FixedUpdates()
-    {
-        GatherInputs();
-        Rotation();
-        ThrustAndBrake();
-        ClampMaxSpeed();
-        CustomFriction();
-    }
+    
 
     void GatherInputs()
     {
@@ -98,6 +90,14 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        FixedUpdates();
+        GatherInputs();
+    }
+
+    void FixedUpdate()
+    {
+        Rotation();
+        ThrustAndBrake();
+        ClampMaxSpeed();
+        CustomFriction();
     }
 }
