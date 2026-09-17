@@ -12232,7 +12232,7 @@ GameObject:
   - component: {fileID: 269311228}
   - component: {fileID: 269311227}
   - component: {fileID: 269311226}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34642,7 +34642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   TargetCar: {fileID: 0}
-  Offset: {x: 0, y: 7, z: -9}
+  Offset: {x: 0, y: 15, z: -10}
   FollowLerpSmooth: 0.05
   GroundY: 0
   CurrentLooking: {x: 0, y: 0, z: 0}

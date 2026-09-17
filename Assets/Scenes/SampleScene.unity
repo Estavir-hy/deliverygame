@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   TargetCar: {fileID: 0}
-  Offset: {x: 0, y: 7, z: -9}
+  Offset: {x: 0, y: 9, z: -9}
   FollowLerpSmooth: 0.05
   GroundY: 0
   CurrentLooking: {x: 0, y: 0, z: 0}
@@ -1147,7 +1147,7 @@ GameObject:
   - component: {fileID: 1211216253}
   - component: {fileID: 1211216252}
   - component: {fileID: 1211216251}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1257,6 +1257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1494457031}
+  - component: {fileID: 1494457032}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -1285,6 +1286,19 @@ Transform:
   - {fileID: 2096012453}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1494457032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494457030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9efe6c0b38cd6fc4db27617bc70db706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  MaterialNum: 0
 --- !u!1 &1701397369
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,7 +1311,7 @@ GameObject:
   - component: {fileID: 1701397372}
   - component: {fileID: 1701397371}
   - component: {fileID: 1701397370}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
