@@ -18,6 +18,10 @@ public class CarController : MonoBehaviour
     private float ThrustInput; // "w/space"positive   "s"negative
     private float RotateInput; // "A/D"
 
+    [Header("ground detect")]
+    public float groundCheckDistance = 0.3f;
+    public LayerMask groundLayer;
+
     
 
     void GatherInputs()
@@ -75,9 +79,18 @@ public class CarController : MonoBehaviour
 
     void CustomFriction()
     {
-        Vector3 flatVel = RB.linearVelocity;
-        flatVel.y = 0;
-        RB.AddForce(-flatVel * Friction, ForceMode.Acceleration);
+        bool isGrounded = Physics.Raycast(
+        transform.position, 
+        Vector3.down, 
+        groundCheckDistance, 
+        groundLayer
+        );
+        if(isGrounded)
+        {
+            Vector3 flatVel = RB.linearVelocity;
+            flatVel.y = 0;
+            RB.AddForce(-flatVel * Friction, ForceMode.Acceleration);   
+        }
     }
 
     public float GetCurrentSpeed()

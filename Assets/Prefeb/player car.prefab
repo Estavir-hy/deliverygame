@@ -513,7 +513,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 0
+  m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -532,12 +532,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1092b954b5e059944bd6bdd0f6d04cb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  ThrustForce: 8
-  BrakeForce: 2
+  ThrustForce: 12
+  BrakeForce: 6
   RotateTorque: 6
-  MaxSpeed: 25
-  Friction: 1
+  MaxSpeed: 35
+  Friction: 1.5
   RB: {fileID: 8458824352307063125}
+  groundCheckDistance: 1.3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &550100216489618843
 MonoBehaviour:
   m_ObjectHideFlags: 0
