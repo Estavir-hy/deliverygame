@@ -1,6 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class CarController : MonoBehaviour
+
+public class CarController : NetworkBehaviour
 {
     [Header("MovementData")]
     [Tooltip("Thrustforce")]
@@ -22,7 +24,17 @@ public class CarController : MonoBehaviour
     public float groundCheckDistance = 0.3f;
     public LayerMask groundLayer;
 
-    
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            CameraFollow cameraFollow = FindAnyObjectByType<CameraFollow>();
+            if (cameraFollow != null)
+            {
+                cameraFollow.TargetCar = this.transform;
+            }
+        }
+    }
 
     void GatherInputs()
     {
@@ -103,11 +115,13 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if(!IsOwner) return;
         GatherInputs();
     }
 
     void FixedUpdate()
     {
+        if (!IsOwner) return;
         Rotation();
         ThrustAndBrake();
         ClampMaxSpeed();

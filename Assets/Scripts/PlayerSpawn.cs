@@ -1,30 +1,38 @@
+using System.Xml.Serialization;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerSpawn : MonoBehaviour
 {
-    public GameObject playerCarPrefab;
-    public Transform SpawnPoint;
-
-    private GameObject currentPlayer;
+    [SerializeField]
+    public Transform[] SpawnPoints;
+    private int nextSpawnIndex = 0;
 
     void Start()
     {
-        SpawnPlayer();
+        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
     }
 
-    void SpawnPlayer()
+    private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        if(currentPlayer != null)
-            Destroy(currentPlayer);
+        // Approve all connections for this example
+        response.Approved = true;
+        response.CreatePlayerObject = true;
 
-        currentPlayer = Instantiate(playerCarPrefab, SpawnPoint.position,SpawnPoint.rotation);
-
-        CameraFollow cam = Camera.main.GetComponent<CameraFollow>();
-        if (cam!= null)
+        if (SpawnPoints != null && SpawnPoints.Length > 0)
         {
-            cam.TargetCar = currentPlayer.transform;
+            // Assign the spawn position and rotation based on the next spawn point
+            response.Position = SpawnPoints[nextSpawnIndex].position;
+            response.Rotation = SpawnPoints[nextSpawnIndex].rotation;
+            // Update the next spawn index for the next player
+            nextSpawnIndex = (nextSpawnIndex + 1) % SpawnPoints.Length;
         }
-    }
+        else
+        {
+            // If no spawn points are defined, use default values
+            response.Position = Vector3.zero;
+            response.Rotation = Quaternion.identity;
+        }
 
-    
+    }
 }
