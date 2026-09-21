@@ -23,7 +23,7 @@ public class Level : MonoBehaviour
         else
         {
             levelTimer -= Time.deltaTime;
-            Debug.Log("Level time: " + levelTimer);
+            //Debug.Log("Level time: " + levelTimer);
         }
     }
 

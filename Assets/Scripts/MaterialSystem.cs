@@ -26,7 +26,7 @@ public class MaterialSystem : MonoBehaviour, IInteractable
     void Update()
     {
         Farm();
-        Debug.Log(MaterialNum);
+        //Debug.Log(MaterialNum);
     }
 
     public void Interact()

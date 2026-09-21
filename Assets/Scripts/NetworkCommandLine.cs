@@ -3,29 +3,34 @@ using Unity.Netcode;
 
 public class NetworkCommandLine : MonoBehaviour
 {
-    void OnGUI()
-    {
-        GUILayout.BeginArea(new Rect(10, 10, 200, 200));
+    public static NetworkCommandLine instance;
+    public bool IsHosting = false;
 
+    public void Start()
+    {
+        if (instance == null) instance = this;
+    }
+
+    public void StartGame()
+    {
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
-            if (GUILayout.Button("Start Host"))
+
+            if(IsHosting)
             {
                 NetworkManager.Singleton.StartHost();
             }
-            if (GUILayout.Button("Start Client"))
+            else
             {
                 NetworkManager.Singleton.StartClient();
             }
-            if (GUILayout.Button("Start Server"))
-            {
-                NetworkManager.Singleton.StartServer();
-            }
+            
         }
         else
         {
-            GUILayout.Label($"Mode: {(NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client")}");
+          //GUILayout.Label($"Mode: {(NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client")}");
         }
-        GUILayout.EndArea();
     }
+    
+    
 }
