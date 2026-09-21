@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
 
-public class CameraFollow : NetworkBehaviour
+public class CameraFollow : MonoBehaviour
 {
     [Header("FollowTarget")]
     public Transform TargetCar;
@@ -16,35 +16,59 @@ public class CameraFollow : NetworkBehaviour
     
     public Vector3 CurrentLooking;
 
-    void Start()
+    // void Start()
+    // {
+    //     if (!IsOwner) return;
+    //     if(TargetCar == null)
+    //     {
+    //         GameObject player = GameObject.FindGameObjectWithTag("Player");
+    //         if(player != null)
+    //         {
+    //             TargetCar = player.transform;
+    //         }
+    //         else
+    //         {
+    //             Debug.LogError("no player");
+    //         }
+    //     }
+    // }
+
+
+    // void FixedUpdate()
+    // {
+    //     if (!IsOwner) return;
+    //     CurrentLooking = Vector3.Lerp(CurrentLooking, TargetCar.position, FollowLerpSmooth);
+
+    //     transform.position = CurrentLooking + Offset;
+
+    //     transform.LookAt(CurrentLooking);
+    // }
+
+    void LateUpdate()
     {
-        if (!IsOwner) return;
-        if(TargetCar == null)
+        // Find the local player's car
+        if (TargetCar == null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if(player != null)
-            {
-                TargetCar = player.transform;
-            }
-            else
-            {
-                Debug.LogError("no player");
-            }
+            if (NetworkManager.Singleton == null)
+                return;
+
+            if (!NetworkManager.Singleton.IsClient)
+                return;
+
+            NetworkObject playerObject = NetworkManager.Singleton.LocalClient.PlayerObject;
+
+            if (playerObject == null)
+                return;
+
+            TargetCar = playerObject.transform;
+            CurrentLooking = TargetCar.position;
         }
-    }
 
-
-    void FixedUpdate()
-    {
-        if (!IsOwner) return;
-        CurrentLooking = Vector3.Lerp(CurrentLooking, TargetCar.position, FollowLerpSmooth);
-
+        // Follow the local player's car
+        CurrentLooking = Vector3.Lerp( CurrentLooking, TargetCar.position, FollowLerpSmooth );
 
         transform.position = CurrentLooking + Offset;
-
         transform.LookAt(CurrentLooking);
-
-
     }
 
 

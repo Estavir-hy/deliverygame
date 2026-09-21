@@ -4,14 +4,6 @@ using Unity.Netcode;
 
 public class MainMenu : MonoBehaviour
 {
-    
-
-    public void QuitGame()
-    {
-        Debug.Log("Quiting...");
-        Application.Quit();
-    }
-
     public void HostGame()
     {
         if(NetworkManager.Singleton.StartHost())
@@ -20,12 +12,18 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Fuck you");
+            Debug.LogError("Failed to start host.");
         }
 
     }
     public void JoinGame()
     {
         NetworkManager.Singleton.StartClient();
+    }
+
+     public void QuitGame()
+    {
+        Debug.Log("Quiting...");
+        Application.Quit();
     }
 }
