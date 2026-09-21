@@ -1,8 +1,9 @@
 using Unity.Microsoft.GDK;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class CameraFollow : MonoBehaviour
+public class CameraFollow : NetworkBehaviour
 {
     [Header("FollowTarget")]
     public Transform TargetCar;
@@ -17,6 +18,7 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
+        if (!IsOwner) return;
         if(TargetCar == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -34,6 +36,7 @@ public class CameraFollow : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!IsOwner) return;
         CurrentLooking = Vector3.Lerp(CurrentLooking, TargetCar.position, FollowLerpSmooth);
 
 
