@@ -76,6 +76,16 @@ public class PlayerSpawn : NetworkBehaviour
         Transform spawnPoint = SpawnPoints[nextSpawnIndex];
         player.transform.SetPositionAndRotation(spawnPoint.position,spawnPoint.rotation);
 
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        if (rb != null)
+        {
+            rb.position = spawnPoint.position;
+            rb.rotation = spawnPoint.rotation;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
         Debug.Log($"Player {player.OwnerClientId} spawned at {spawnPoint.position}");
 
         nextSpawnIndex++;
