@@ -16,6 +16,7 @@ public class Level : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
         if (levelTimer <= 0)
         {
             EndLevel();

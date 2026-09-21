@@ -18,6 +18,8 @@ public class MaterialSystem : MonoBehaviour, IInteractable
         {
             MaterialNum += 1;
             Timer = 0;
+            // Debug the material when its supposed to add not in update!
+            Debug.Log(MaterialNum);
         }
         else
             Timer += Time.deltaTime;
@@ -25,8 +27,8 @@ public class MaterialSystem : MonoBehaviour, IInteractable
 
     void Update()
     {
+        if (LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
         Farm();
-        //Debug.Log(MaterialNum);
     }
 
     public void Interact()

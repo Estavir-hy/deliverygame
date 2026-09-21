@@ -116,6 +116,7 @@ public class CarController : NetworkBehaviour
     void Update()
     {
         if(!IsOwner) return;
+        if(LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
         GatherInputs();
     }
 

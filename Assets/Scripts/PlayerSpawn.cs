@@ -6,27 +6,17 @@ public class PlayerSpawn : NetworkBehaviour
 {
     [SerializeField]
     public Transform[] SpawnPoints;
+    [SerializeField] private GameObject playerPrefab;
     private int nextSpawnIndex = 0;
 
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
             return;
-        
-        SpawnAllPlayers();
-    }
 
-    private void SpawnAllPlayers()
-    {
-        if (SpawnPoints == null || SpawnPoints.Length == 0)
+        foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            Debug.LogError("No spawn points assigned!");
-            return;
-        }
-
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            SpawnPlayer(client.PlayerObject);
+            SpawnPlayer(client.ClientId);
         }
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -34,66 +24,25 @@ public class PlayerSpawn : NetworkBehaviour
 
     private void OnClientConnected(ulong clientId)
     {
-        Debug.Log($"CLIENT CONNECTED: {clientId}");
-
-        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(
-            clientId,
-            out NetworkClient client))
-        {
-            Debug.LogError($"Could not find client {clientId}");
+        if (!IsServer)
             return;
-        }
-
-        Debug.Log($"Client found: {clientId}");
-        Debug.Log($"PlayerObject: {client.PlayerObject}");
-
-        if (client.PlayerObject == null)
-        {
-            Debug.LogError(
-                $"CLIENT {clientId} HAS NO PLAYER OBJECT!"
-            );
-
-            return;
-        }
-
-        SpawnPlayer(client.PlayerObject);
+        SpawnPlayer(clientId);
     }
 
-    private void SpawnPlayer(NetworkObject player)
+    private void SpawnPlayer(ulong playerID)
     {
-        if (player == null)
-        {
-            Debug.LogError("Player object doesn't exist!");
-            return;
-        }
-
-        if (SpawnPoints == null || SpawnPoints.Length == 0)
-        {
+       if(SpawnPoints.Length == 0)
+       {
             Debug.LogError("No spawn points assigned!");
             return;
-        }
+       }
 
-        Transform spawnPoint = SpawnPoints[nextSpawnIndex];
-        player.transform.SetPositionAndRotation(spawnPoint.position,spawnPoint.rotation);
-
-        Rigidbody rb = player.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.position = spawnPoint.position;
-            rb.rotation = spawnPoint.rotation;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
-        Debug.Log($"Player {player.OwnerClientId} spawned at {spawnPoint.position}");
-
+        Transform spawnPoint = SpawnPoints[nextSpawnIndex % SpawnPoints.Length];
         nextSpawnIndex++;
 
-        if (nextSpawnIndex >= SpawnPoints.Length)
-        {
-            nextSpawnIndex = 0;
-        }
+        GameObject car = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        car.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
     }
 
     public override void OnDestroy()
@@ -106,4 +55,5 @@ public class PlayerSpawn : NetworkBehaviour
 
         base.OnDestroy();
     }
+
 }

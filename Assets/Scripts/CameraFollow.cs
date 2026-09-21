@@ -44,7 +44,7 @@ public class CameraFollow : MonoBehaviour
     //     transform.LookAt(CurrentLooking);
     // }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         // Find the local player's car
         if (TargetCar == null)
@@ -73,7 +73,8 @@ public class CameraFollow : MonoBehaviour
 
 
 
-     // Vector3 GroundHitPoint()
+
+    // Vector3 GroundHitPoint()
     // {
     //     Vector3 CamPos = transform.position;
     //     Vector3 RayDir = (TargetCar.position - CamPos).normalized;
