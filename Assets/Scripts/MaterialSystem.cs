@@ -19,7 +19,7 @@ public class MaterialSystem : MonoBehaviour, IInteractable
             MaterialNum += 1;
             Timer = 0;
             // Debug the material when its supposed to add not in update!
-            Debug.Log(MaterialNum);
+            //Debug.Log(MaterialNum);
         }
         else
             Timer += Time.deltaTime;
