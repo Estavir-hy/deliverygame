@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -24,8 +25,12 @@ public class CarController : NetworkBehaviour
     public float groundCheckDistance = 0.3f;
     public LayerMask groundLayer;
 
+    private MatchManager matchManager;
+
     public override void OnNetworkSpawn()
     {
+        matchManager = FindAnyObjectByType<MatchManager>();
+
         if (IsOwner)
         {
             CameraFollow cameraFollow = FindAnyObjectByType<CameraFollow>();
@@ -116,13 +121,18 @@ public class CarController : NetworkBehaviour
     void Update()
     {
         if(!IsOwner) return;
+        if (matchManager != null && matchManager.MatchEnded.Value) return;
+
         if(LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
+
         GatherInputs();
     }
 
     void FixedUpdate()
     {
         if (!IsOwner) return;
+        if (matchManager != null && matchManager.MatchEnded.Value) return;
+
         Rotation();
         ThrustAndBrake();
         ClampMaxSpeed();
