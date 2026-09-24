@@ -1,34 +1,48 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class MaterialSystem : MonoBehaviour, IInteractable
+public class MaterialSystem : NetworkBehaviour, IInteractable
 {
-    [Header("material data")]
-    public float MaterialNum;
+    [Header("Material Data")]
+
+    public NetworkVariable<int> MaterialNum = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<ulong> BaseOwnerId = new NetworkVariable<ulong>(ulong.MaxValue, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     private float Timer;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        MaterialNum = 0;
-        Timer = 0;
-    }
+        if (!IsServer)
+            return;
 
-    public void Farm()
-    {
-        if(Timer >= 1)
-        {
-            MaterialNum += 1;
-            Timer = 0;
-            // Debug the material when its supposed to add not in update!
-            //Debug.Log(MaterialNum);
-        }
-        else
-            Timer += Time.deltaTime;
+        MaterialNum .Value = 0;
+        Timer = 0;
     }
 
     void Update()
     {
+        if (!IsServer)
+            return;
+
         if (LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
+        
         Farm();
+    }
+
+    private void Farm()
+    {
+        if (Timer >= 1f)
+        {
+            MaterialNum.Value += 1;
+            Timer = 0f;
+
+            //Debug.Log($"Materials: {MaterialNum.Value}");
+        }
+        else
+        {
+            Timer += Time.deltaTime;
+        }
     }
 
     public void Interact()
