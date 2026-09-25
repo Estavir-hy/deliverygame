@@ -34,7 +34,6 @@ public class PlayerSpawn : NetworkBehaviour
 
     private void SpawnPlayer(ulong playerID)
     {
-        Debug.Log($"【生成校验】SpawnPlayer 被调用,playerID={playerID}, 即将分配 index={(nextSpawnIndex) % playerBases.Length}");
        if(SpawnPoints.Length == 0)
        {
             Debug.LogError("No spawn points assigned!");
