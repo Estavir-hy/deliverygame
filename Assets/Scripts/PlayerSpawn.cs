@@ -1,12 +1,16 @@
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSpawn : NetworkBehaviour
 {
-    [SerializeField] public Transform[] SpawnPoints;
-    [SerializeField] private MaterialSystem[] PlayerBases;
+    [SerializeField]
+    public Transform[] SpawnPoints;
     [SerializeField] private GameObject playerPrefab;
     private int nextSpawnIndex = 0;
+
+    [Header("Player's Bases")]
+    public BaseOwnership[] playerBases;
 
     public override void OnNetworkSpawn()
     {
@@ -36,26 +40,20 @@ public class PlayerSpawn : NetworkBehaviour
             return;
        }
 
-       if (PlayerBases.Length == 0)
-        {
-            Debug.LogError("No player bases assigned!");
-            return;
-        }
+        Transform spawnPoint = SpawnPoints[nextSpawnIndex % SpawnPoints.Length];
+        nextSpawnIndex++;
 
-        int spawnIndex = nextSpawnIndex % SpawnPoints.Length;
-
-        Transform spawnPoint = SpawnPoints[spawnIndex];
         GameObject car = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
         car.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
 
-        // Assign this base to this player
-        if (spawnIndex < PlayerBases.Length)
-        {
-            PlayerBases[spawnIndex].BaseOwnerId.Value = playerID;
-            Debug.Log($"Player {playerID} assigned to Base {spawnIndex}");
-        }
 
-        nextSpawnIndex++;
+        // give belongs to base(pair base with players)
+        int index = (nextSpawnIndex - 1) % playerBases.Length;
+        if (playerBases != null && playerBases.Length > index)
+        {
+            playerBases[index].OwnerPlayerId.Value = playerID;
+        }
     }
 
     public override void OnDestroy()

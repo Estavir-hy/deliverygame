@@ -34,4 +34,17 @@ public class PlayerCargoState :NetworkBehaviour
         GetComponent<PlayerScore>().AddScore(1);
     }
 
+    //check for specific base for specific player
+    [ServerRpc]
+    public void DeliverCargoServerRpc(ulong baseOwnerId)
+    {
+        if(OwnerClientId != baseOwnerId)
+        {
+            Debug.Log("it is not my base!");
+            return;
+        }
+
+        DeliverCargoServerRpc();
+    }
+
 }
