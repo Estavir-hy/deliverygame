@@ -3,7 +3,13 @@ using UnityEngine;
 public class CargoDeliveryPoint:MonoBehaviour,IInteractable
 {
     private PlayerCargoState _nearbyCargoState;
+    private BaseOwnership _baseOwnerShip;
 
+
+    public void Awake()
+    {
+        _baseOwnerShip = GetComponent<BaseOwnership>();
+    }
     public void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out PlayerCargoState cargo))
@@ -21,6 +27,18 @@ public class CargoDeliveryPoint:MonoBehaviour,IInteractable
 
     public void Interact()
     {
-        _nearbyCargoState?.DeliverCargoServerRpc();    
+        if(_nearbyCargoState == null || _baseOwnerShip == null)
+        {
+            return;
+        }
+
+        if(_baseOwnerShip.OwnerPlayerId.Value != _nearbyCargoState.OwnerClientId)
+        {
+            Debug.Log("IT IS NOT THE BASE");
+            return;
+        }
+
+        Debug.Log($"【交付校验】基地归属ID：{_baseOwnerShip.OwnerPlayerId.Value} | 当前玩家ID：{_nearbyCargoState.OwnerClientId}");
+        _nearbyCargoState?.DeliverCargoServerRpc(_baseOwnerShip.OwnerPlayerId.Value);    
     }
 }

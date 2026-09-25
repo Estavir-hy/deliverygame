@@ -9,6 +9,9 @@ public class PlayerSpawn : NetworkBehaviour
     [SerializeField] private GameObject playerPrefab;
     private int nextSpawnIndex = 0;
 
+    [Header("Player's Bases")]
+    public BaseOwnership[] playerBases;
+
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
@@ -31,6 +34,7 @@ public class PlayerSpawn : NetworkBehaviour
 
     private void SpawnPlayer(ulong playerID)
     {
+        Debug.Log($"【生成校验】SpawnPlayer 被调用,playerID={playerID}, 即将分配 index={(nextSpawnIndex) % playerBases.Length}");
        if(SpawnPoints.Length == 0)
        {
             Debug.LogError("No spawn points assigned!");
@@ -43,6 +47,14 @@ public class PlayerSpawn : NetworkBehaviour
         GameObject car = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
 
         car.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
+
+
+        // give belongs to base(pair base with players)
+        int index = (nextSpawnIndex - 1) % playerBases.Length;
+        if (playerBases != null && playerBases.Length > index)
+        {
+            playerBases[index].OwnerPlayerId.Value = playerID;
+        }
     }
 
     public override void OnDestroy()
