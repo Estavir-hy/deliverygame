@@ -560,6 +560,7 @@ GameObject:
   - component: {fileID: 9057883495552517438}
   - component: {fileID: 8504811697832707958}
   - component: {fileID: 3465408766002556808}
+  - component: {fileID: 8113530544217927745}
   m_Layer: 3
   m_Name: player car
   m_TagString: Player
@@ -780,6 +781,11 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  CargoHealth:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   CargoIndecator: {fileID: 8560034900022449826}
 --- !u!114 &3465408766002556808
 MonoBehaviour:
@@ -799,6 +805,25 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+--- !u!114 &8113530544217927745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4929116386006350302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30c53440e3d66e447a58da59e2432be3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
+  highSpeedDef: 3
+  lowSpeedDef: 2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  damageCooldown: 0.6
 --- !u!1 &6086564533477810143
 GameObject:
   m_ObjectHideFlags: 0

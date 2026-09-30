@@ -6,6 +6,8 @@ public class PlayerCargoState :NetworkBehaviour
 {
     public NetworkVariable<PlayerTruckState> CurrentState = new NetworkVariable<PlayerTruckState>(PlayerTruckState.Empty);
 
+    public NetworkVariable<int> CargoHealth = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     [Header("MeshRenderer")]
     public MeshRenderer CargoIndecator;
 
@@ -19,7 +21,10 @@ public class PlayerCargoState :NetworkBehaviour
     public void PickupCargoServerRpc()
     {
         if (CurrentState.Value == PlayerTruckState.Empty)
+        {
             CurrentState.Value = PlayerTruckState.loaded;
+            CargoHealth.Value = 5;
+        }
         Debug.Log("has loaded cargo");
     }
 
@@ -31,7 +36,9 @@ public class PlayerCargoState :NetworkBehaviour
 
         CurrentState.Value = PlayerTruckState.Empty;
         Debug.Log("has empty");
-        GetComponent<PlayerScore>().AddScore(1);
+        int finalScore = Mathf.Max(0, CargoHealth.Value);
+        GetComponent<PlayerScore>().AddScore(finalScore);
+        CargoHealth.Value = 0;
     }
 
     //check for specific base for specific player
@@ -45,6 +52,20 @@ public class PlayerCargoState :NetworkBehaviour
         }
 
         DeliverCargoServerRpc();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (!IsServer) return;
+        if (CurrentState.Value != PlayerTruckState.loaded) return;
+        if (CargoHealth.Value <= 0) return;
+
+        CargoHealth.Value = Mathf.Max(0,CargoHealth.Value - damage);
+
+        if(CargoHealth.Value <= 0)
+        {
+            CurrentState.Value = PlayerTruckState.Empty;
+        }
     }
 
 }
