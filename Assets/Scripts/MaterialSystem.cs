@@ -3,14 +3,23 @@ using UnityEngine;
 
 public class MaterialSystem : NetworkBehaviour, IInteractable
 {
+    public static MaterialSystem Instance { get; private set; }
+
     [Header("Material Data")]
 
     public NetworkVariable<int> MaterialNum = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public NetworkVariable<ulong> BaseOwnerId = new NetworkVariable<ulong>(ulong.MaxValue, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
     private float Timer;
 
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
@@ -43,6 +52,11 @@ public class MaterialSystem : NetworkBehaviour, IInteractable
         {
             Timer += Time.deltaTime;
         }
+    }
+
+    public void BuyWall(int price)
+    {
+        MaterialNum.Value -= price;
     }
 
     public void Interact()

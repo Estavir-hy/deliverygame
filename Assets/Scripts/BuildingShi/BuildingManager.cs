@@ -30,15 +30,15 @@ public class BuildingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !IsBuilding)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (!IsBuilding)
+            if (IsBuilding)
             {
-                StartBuilding();
+                CancelBuild();
             }
             else
             {
-                CancelBuild();
+                StartBuilding();
             }
         }
 
@@ -72,7 +72,7 @@ public class BuildingManager : MonoBehaviour
     private void UpdatePreview()
     {
         Vector3 mousePos = GetWorldMousePosition();
-        fm.SetPosition(new Vector3(mousePos.x, 1, mousePos.z));
+        fm.SetPosition(new Vector3(mousePos.x, 2.1f, mousePos.z));
     }
 
     private void TryPlaceBuilding()
@@ -82,6 +82,15 @@ public class BuildingManager : MonoBehaviour
             Debug.Log("Cannot place building here!");
             return;
         }
+
+        if(MaterialSystem.Instance.MaterialNum.Value <= 10)
+        {
+            Debug.Log("Not enough materials to build!");
+            return;
+        }
+        
+       MaterialSystem.Instance.BuyWall(10);
+
         Instantiate(solidPrefab, fm.transform.position, fm.transform.rotation);
 
         CancelBuild();
