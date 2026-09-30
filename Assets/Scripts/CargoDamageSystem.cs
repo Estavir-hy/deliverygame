@@ -21,11 +21,21 @@ public class CargoDamageSystem : NetworkBehaviour
 
 
     private float[] _history = new float[30];
+    private int _hIdx;
+    private Rigidbody _rb;
 
     public override void OnNetworkSpawn()
     {
         _carController = GetComponent<CarController>();
         _cargoState = GetComponent<PlayerCargoState>();
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsServer || _rb == null) return;
+        _history[_hIdx] = _rb.linearVelocity.magnitude;
+        _hIdx = (_hIdx + 1) % _history.Length;
     }
 
 
