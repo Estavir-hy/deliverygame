@@ -11,6 +11,5 @@ public class BaseOwnership : NetworkBehaviour
         {
             OwnerPlayerId.Value = 5;
         }
-        Debug.Log($"基地 {gameObject.name} 初始 OwnerPlayerId = {OwnerPlayerId.Value}");
     }
 }

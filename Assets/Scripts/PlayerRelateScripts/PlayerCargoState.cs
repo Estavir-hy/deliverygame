@@ -25,7 +25,6 @@ public class PlayerCargoState :NetworkBehaviour
             CurrentState.Value = PlayerTruckState.loaded;
             CargoHealth.Value = 5;
         }
-        Debug.Log("has loaded cargo");
     }
 
     [ServerRpc]

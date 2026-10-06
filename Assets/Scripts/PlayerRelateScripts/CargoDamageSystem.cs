@@ -8,7 +8,7 @@ using UnityEngine;
 public class CargoDamageSystem : NetworkBehaviour
 {
     [Header("Damage speed range")]
-    public float highSpeedDef = 7f;
+    public float highSpeedDef = 7.5f;
     public float lowSpeedDef = 5f;
     [Header("Crash settings")]
     public LayerMask groundLayer;
@@ -20,7 +20,7 @@ public class CargoDamageSystem : NetworkBehaviour
 
 
 
-    private float[] _history = new float[30];
+    private float[] _history = new float[3];
     private int _hIdx;
     private Rigidbody _rb;
 
@@ -41,7 +41,6 @@ public class CargoDamageSystem : NetworkBehaviour
 
     private void Update()
     {
-        //Debug.Log(_carController.GetCurrentSpeed());
         if(!IsServer) return;
 
         if(cooldownTimer > 0)

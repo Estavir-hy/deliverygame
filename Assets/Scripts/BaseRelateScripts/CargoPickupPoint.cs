@@ -19,6 +19,8 @@ public class CargoPickupPoint:MonoBehaviour, IInteractable
     {
         if(other.TryGetComponent(out PlayerCargoState cargo) && cargo == _nearbyPlayerCargo)
             _nearbyPlayerCargo = null;
+        timer = 0;
+        isCounting = false;
         Debug.Log("find something exit F");
     }
 

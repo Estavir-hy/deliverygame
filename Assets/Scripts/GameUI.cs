@@ -6,7 +6,7 @@ using UnityEngine.SocialPlatforms;
 public class GameUI : MonoBehaviour
 {
     [Header("Match UI")]
-    [SerializeField] private TMP_Text CargoHealthText;
+    // [SerializeField] private TMP_Text CargoHealthText;
 
     
     [SerializeField] private TMP_Text TimerText;
@@ -50,7 +50,6 @@ public class GameUI : MonoBehaviour
         UpdateScore();
         UpdateMaterialNumber();
 
-        UpdateCargoHealth();
 
         if (matchManager.MatchEnded.Value && !winScreenShown)
         {
@@ -150,16 +149,16 @@ public class GameUI : MonoBehaviour
         }
     }
 
-    private void UpdateCargoHealth()
-    {
-        if (playerScore == null) return;
-        PlayerCargoState cargo = playerScore.GetComponent<PlayerCargoState>();
-        if (cargo == null) return;
+    // private void UpdateCargoHealth()
+    // {
+    //     if (playerScore == null) return;
+    //     PlayerCargoState cargo = playerScore.GetComponent<PlayerCargoState>();
+    //     if (cargo == null) return;
         
-        if (CargoHealthText != null)
-        {
-            CargoHealthText.text = $"Cargo health: {cargo.CargoHealth.Value} / 5";
-        }
-    }
+    //     if (CargoHealthText != null)
+    //     {
+    //         CargoHealthText.text = $"Cargo health: {cargo.CargoHealth.Value} / 5";
+    //     }
+    // }
 
 }
