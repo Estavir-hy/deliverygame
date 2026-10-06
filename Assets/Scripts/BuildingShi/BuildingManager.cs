@@ -1,6 +1,8 @@
 using UnityEngine;
+using Unity.Netcode;
+using System.Xml.Serialization;
 
-public class BuildingManager : MonoBehaviour
+public class BuildingManager : NetworkBehaviour
 {
     public static BuildingManager instance;
 
@@ -30,6 +32,8 @@ public class BuildingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!IsOwner) return;
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (IsBuilding)
@@ -82,18 +86,32 @@ public class BuildingManager : MonoBehaviour
             Debug.Log("Cannot place building here!");
             return;
         }
-
-        if(MaterialSystem.Instance.MaterialNum.Value <= 10)
-        {
-            Debug.Log("Not enough materials to build!");
-            return;
-        }
         
-       MaterialSystem.Instance.BuyWall(10);
-
-        Instantiate(solidPrefab, fm.transform.position, fm.transform.rotation);
+        RequestPlaceServerRpc(fm.transform.position, fm.transform.rotation);
 
         CancelBuild();
+    }
+    [ServerRpc]
+    private void RequestPlaceServerRpc(Vector3 position, Quaternion rotation)
+    {
+        MaterialSystem pb = GetLocalPlayerBase(OwnerClientId);
+
+        if(pb == null)
+        {
+            Debug.Log($"No base found for player {OwnerClientId}!");
+            return;
+        }
+
+        if(pb.MaterialNum.Value < 10)
+        {
+            Debug.Log($"Not enough materials to place building! Current: {pb.MaterialNum.Value}");
+            return;
+        }
+
+        pb.BuyWall(10);
+
+        GameObject wall = Instantiate(solidPrefab, position, rotation);
+        wall.GetComponent<NetworkObject>().Spawn();
     }
     private Vector3 GetWorldMousePosition()
     {
@@ -103,5 +121,39 @@ public class BuildingManager : MonoBehaviour
             return ray.GetPoint(dist);
         }
         return Vector3.zero;
+    }
+
+    private MaterialSystem GetLocalPlayerBase(ulong clientId)
+    {
+        MaterialSystem[] allBases = FindObjectsByType<MaterialSystem>();
+        
+        if(allBases.Length == 1)
+        {
+            return allBases[0];
+        }
+
+        foreach(MaterialSystem pb in allBases)
+        {
+            if (pb.BaseOwnerId.Value == clientId)
+            {
+                return pb;
+            }
+        }
+
+        BaseOwnership[] allOwnerships = FindObjectsByType<BaseOwnership>();
+        foreach(BaseOwnership bo in allOwnerships)
+        {
+            if (bo.OwnerPlayerId.Value == clientId)
+            {
+                MaterialSystem found = bo.GetComponent<MaterialSystem>() 
+                    ?? bo.GetComponentInParent<MaterialSystem>() 
+                    ?? bo.GetComponentInChildren<MaterialSystem>();
+                if (found != null)
+                {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 }

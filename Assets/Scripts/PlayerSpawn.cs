@@ -49,10 +49,24 @@ public class PlayerSpawn : NetworkBehaviour
 
 
         // give belongs to base(pair base with players)
-        int index = (nextSpawnIndex - 1) % playerBases.Length;
-        if (playerBases != null && playerBases.Length > index)
+        //int index = (nextSpawnIndex - 1) % playerBases.Length;
+        //if (playerBases != null && playerBases.Length > index)
+        //{
+        //    playerBases[index].OwnerPlayerId.Value = playerID;
+        //}
+        if(playerBases != null && playerBases.Length > 0)
         {
+            int index = (nextSpawnIndex - 1) % playerBases.Length;
             playerBases[index].OwnerPlayerId.Value = playerID;
+
+            MaterialSystem mat = playerBases[index].GetComponent<MaterialSystem>() 
+                ?? playerBases[index].GetComponentInParent<MaterialSystem>() 
+                ?? playerBases[index].GetComponentInChildren<MaterialSystem>();
+
+            if(mat != null)
+            {
+                mat.BaseOwnerId.Value = playerID;
+            }
         }
     }
 

@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
-
+using Unity.Netcode.Transports.UTP;
+using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
+
+    [SerializeField] private InputField ipField;
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
         // Approve the player and tell NGO to notspawn their Player Prefab
@@ -28,6 +31,10 @@ public class MainMenu : MonoBehaviour
     }
     public void JoinGame()
     {
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        string targetIP = string.IsNullOrEmpty(ipField.text) ? "127.0.0.1" : ipField.text;
+        transport.SetConnectionData(targetIP, 7777);
+
         NetworkManager.Singleton.StartClient();
     }
 

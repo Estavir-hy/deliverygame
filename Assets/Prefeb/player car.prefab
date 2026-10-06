@@ -560,6 +560,7 @@ GameObject:
   - component: {fileID: 9057883495552517438}
   - component: {fileID: 8504811697832707958}
   - component: {fileID: 3465408766002556808}
+  - component: {fileID: 2912940647022053828}
   m_Layer: 3
   m_Name: player car
   m_TagString: Player
@@ -799,6 +800,22 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+--- !u!114 &2912940647022053828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4929116386006350302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842c9daa220c3ca408a6cb7d74baec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingManager
+  ShowTopMostFoldoutHeaderGroup: 1
+  mainCam: {fileID: 0}
+  hollowPrefab: {fileID: 6656882478577244920, guid: 13df32c188fe8ef4eb36e7cede266c0d, type: 3}
+  solidPrefab: {fileID: 8941156028934280201, guid: d7f0a00b61e2e384698a048662c3ef7f, type: 3}
 --- !u!1 &6086564533477810143
 GameObject:
   m_ObjectHideFlags: 0

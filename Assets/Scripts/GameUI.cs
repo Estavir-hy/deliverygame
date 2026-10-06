@@ -24,7 +24,7 @@ public class GameUI : MonoBehaviour
     void Start()
     {
         matchManager = FindAnyObjectByType<MatchManager>();
-        materialSystem = FindAnyObjectByType<MaterialSystem>();
+        //materialSystem = FindAnyObjectByType<MaterialSystem>();
 
         if (WinScreen != null)
         {
