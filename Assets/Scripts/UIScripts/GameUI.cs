@@ -1,7 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
-using UnityEngine.SocialPlatforms;
 
 public class GameUI : MonoBehaviour
 {
@@ -145,7 +146,7 @@ public class GameUI : MonoBehaviour
 
         if (WinText != null)
         {
-            WinText.text = "Some Player Win"; // Change text here!
+            WinText.text = matchManager.LeaderboardText.Value.ToString();
         }
     }
 
