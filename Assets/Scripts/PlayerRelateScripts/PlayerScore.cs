@@ -12,6 +12,6 @@ public class PlayerScore: NetworkBehaviour
             
         Score.Value += amount;
         
-        //Debug.Log($"Player{OwnerClientId},current score:{Score.Value}");
+        Debug.Log($"Player{OwnerClientId},current score:{Score.Value}");
     }
 }

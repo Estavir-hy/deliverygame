@@ -1,11 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
-using UnityEngine.SocialPlatforms;
 
 public class GameUI : MonoBehaviour
 {
     [Header("Match UI")]
+    // [SerializeField] private TMP_Text CargoHealthText;
+
+    
     [SerializeField] private TMP_Text TimerText;
     [SerializeField] private TMP_Text ScoreText;
     [SerializeField] private TMP_Text MaterialText;
@@ -46,6 +50,7 @@ public class GameUI : MonoBehaviour
         UpdateTimer();
         UpdateScore();
         UpdateMaterialNumber();
+
 
         if (matchManager.MatchEnded.Value && !winScreenShown)
         {
@@ -141,7 +146,20 @@ public class GameUI : MonoBehaviour
 
         if (WinText != null)
         {
-            WinText.text = "Some Player Win"; // Change text here!
+            WinText.text = matchManager.LeaderboardText.Value.ToString();
         }
     }
+
+    // private void UpdateCargoHealth()
+    // {
+    //     if (playerScore == null) return;
+    //     PlayerCargoState cargo = playerScore.GetComponent<PlayerCargoState>();
+    //     if (cargo == null) return;
+        
+    //     if (CargoHealthText != null)
+    //     {
+    //         CargoHealthText.text = $"Cargo health: {cargo.CargoHealth.Value} / 5";
+    //     }
+    // }
+
 }
