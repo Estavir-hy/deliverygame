@@ -34,7 +34,7 @@ public class BuildingManager : NetworkBehaviour
     {
         if(!IsOwner) return;
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             if (IsBuilding)
             {
