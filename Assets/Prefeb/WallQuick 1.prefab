@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: -7635826562936255635, guid: 2889ed82984b4c34382f6f61ad4b696b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: d42a1fb565b5ceb43a0ce209073c31fa, type: 2}
+      objectReference: {fileID: 2100000, guid: 34544288c2dfd8a47ad9ce68ed22ae6b, type: 2}
     - target: {fileID: 919132149155446097, guid: 2889ed82984b4c34382f6f61ad4b696b, type: 3}
       propertyPath: m_Name
       value: WallQuick 1
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1388949866
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
