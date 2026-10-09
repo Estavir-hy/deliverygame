@@ -27,8 +27,19 @@ public class PlayerCargoState :NetworkBehaviour
         }
     }
 
+    
     [ServerRpc]
-    public void DeliverCargoServerRpc()
+    public void DeliverCargoServerRpc(ulong baseOwnerId)
+    {
+        if(OwnerClientId != baseOwnerId)
+        {
+            Debug.Log("it is not my base!");
+            return;
+        }
+
+        DeliverInternal();
+    }
+    public void DeliverInternal()
     {
         if (CurrentState.Value != PlayerTruckState.loaded) 
             return;
@@ -41,17 +52,6 @@ public class PlayerCargoState :NetworkBehaviour
     }
 
     //check for specific base for specific player
-    [ServerRpc]
-    public void DeliverCargoServerRpc(ulong baseOwnerId)
-    {
-        if(OwnerClientId != baseOwnerId)
-        {
-            Debug.Log("it is not my base!");
-            return;
-        }
-
-        DeliverCargoServerRpc();
-    }
 
     public void TakeDamage(int damage)
     {

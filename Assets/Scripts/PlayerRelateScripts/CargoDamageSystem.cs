@@ -33,7 +33,7 @@ public class CargoDamageSystem : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsServer || _rb == null) return;
+        if (!IsOwner || _rb == null) return;
         _history[_hIdx] = _rb.linearVelocity.magnitude;
         _hIdx = (_hIdx + 1) % _history.Length;
     }
@@ -61,10 +61,10 @@ public class CargoDamageSystem : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(!IsServer) return;
+        if(!IsOwner) return;
         if(_cargoState == null || _carController == null) return;
         
-        if(cooldownTimer > 0) return;
+        
 
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
             return;
@@ -76,17 +76,23 @@ public class CargoDamageSystem : NetworkBehaviour
         }
         if (!isWallHit) return;
 
-        float peak = GetRecentMax();
-        int damage = calculateDamage(peak);
+        ReportCrashServerRpc(GetRecentMax());
 
+    }
+
+    [ServerRpc]
+    private void ReportCrashServerRpc(float peakSpeed)
+    {
+        if(cooldownTimer > 0) return;
+
+        peakSpeed = Mathf.Min(peakSpeed, _carController.MaxSpeed+1f); 
+        int damage = calculateDamage(peakSpeed);
 
         if(damage > 0)
         {
             _cargoState.TakeDamage(damage);
             cooldownTimer = damageCooldown;
-            
         }
-
     }
 
     private int calculateDamage(float speed)
