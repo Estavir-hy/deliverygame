@@ -77,17 +77,41 @@ public class MatchManager : NetworkBehaviour
         leaderboard.AppendLine("MATCH RESULT");
         leaderboard.AppendLine();
 
+        int currentRank = 0;
+        int previousScore = int.MinValue;
+
         for (int i = 0; i < results.Count; i++)
         {
             var player = results[i];
+
+            if (player.Score != previousScore)
+            {
+                currentRank = i + 1;
+                previousScore = player.Score;
+            }
 
             leaderboard.AppendLine($"{i + 1}. Player {player.ClientId + 1} : {player.Score} points");
         }
 
         if (results.Count > 0)
         {
+            int highestScore = results[0].Score;
+
+            var winners = results
+            .Where(player => player.Score == highestScore)
+            .Select(player => $"Player {player.ClientId + 1}").ToList();
+
             leaderboard.AppendLine();
-            leaderboard.Append($"Winner: Player {results[0].ClientId + 1}!");
+
+            if (winners.Count == 1)
+            {
+                leaderboard.Append($"Winner: {winners[0]}!");
+            }
+            else
+            {
+                leaderboard.Append($"Tie! Winners: {string.Join(", ", winners)}!");
+            }
+        
         }
         else
         {
