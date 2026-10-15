@@ -150,16 +150,4 @@ public class GameUI : MonoBehaviour
         }
     }
 
-    // private void UpdateCargoHealth()
-    // {
-    //     if (playerScore == null) return;
-    //     PlayerCargoState cargo = playerScore.GetComponent<PlayerCargoState>();
-    //     if (cargo == null) return;
-        
-    //     if (CargoHealthText != null)
-    //     {
-    //         CargoHealthText.text = $"Cargo health: {cargo.CargoHealth.Value} / 5";
-    //     }
-    // }
-
 }

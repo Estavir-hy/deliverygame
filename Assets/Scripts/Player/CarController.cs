@@ -18,13 +18,16 @@ public class CarController : NetworkBehaviour
     public float Friction = 1.5f;
 
     public Rigidbody RB;
-    private float ThrustInput; // "w/space"positive   "s"negative
-    private float RotateInput; // "A/D"
+
+    private InputManager _playerInput;
 
     [Header("ground detect")]
     public float groundCheckDistance = 0.3f;
     public LayerMask groundLayer;
+    
 
+    private float _cachedThrust;
+    private float _cachedRotate;
     private MatchManager matchManager;
 
     public override void OnNetworkSpawn()
@@ -38,43 +41,54 @@ public class CarController : NetworkBehaviour
             {
                 cameraFollow.TargetCar = this.transform;
             }
+
+            _playerInput = GetComponent<InputManager>();
+            _playerInput.OnMoveInput += HandleMoveInput;
         }
     }
 
-    void GatherInputs()
+    
+    public override void OnNetworkDespawn()
     {
-        bool IsAccelerate = Input.GetKey(KeyCode.W)||Input.GetKey(KeyCode.Space);
-        bool IsBrake = Input.GetKey(KeyCode.S);
+        if (_playerInput != null)
+        {
+            _playerInput.OnMoveInput -= HandleMoveInput;
+        }
+        base.OnNetworkDespawn();
+    }
 
-        ThrustInput = 0;
-        if(IsAccelerate) ThrustInput = 1f;
-        if(IsBrake) ThrustInput = -1f;        //brake will overlap
+    public void HandleMoveInput(float thrust, float rotate)
+    {
+        if (matchManager != null && matchManager.MatchEnded.Value) return;
 
-        RotateInput = Input.GetAxisRaw("Horizontal");   // A/D input
+        if(LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
+        
 
+        _cachedThrust = thrust;
+        _cachedRotate = rotate;
+    }
+
+    void Rotation(float rotate)
+    {
         float forwardSpeed = Vector3.Dot(RB.linearVelocity,transform.forward);
 
         if(forwardSpeed < -0.1f)
         {
-            RotateInput = -RotateInput;
+            rotate = -rotate;
         }
-    }
-
-    void Rotation()
-    {
-        float torque = RotateInput * RotateTorque;
+        float torque = rotate * RotateTorque;
         RB.AddTorque(Vector3.up * torque, ForceMode.Acceleration);
     }
 
-    void ThrustAndBrake()
+    void ThrustAndBrake(float thrust)
     {
         Vector3 forceDir = transform.forward;
         forceDir.y = 0;
-        if(ThrustInput>0)
+        if(thrust>0)
         {
             RB.AddForce(forceDir * ThrustForce, ForceMode.Acceleration);
         }
-        if(ThrustInput<0)
+        if(thrust<0)
         {
             RB.AddForce(-forceDir * BrakeForce, ForceMode.Acceleration);
         }
@@ -117,24 +131,13 @@ public class CarController : NetworkBehaviour
         return V.magnitude;
     }
 
-
-    void Update()
-    {
-        if(!IsOwner) return;
-        if (matchManager != null && matchManager.MatchEnded.Value) return;
-
-        if(LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
-
-        GatherInputs();
-    }
-
     void FixedUpdate()
     {
         if (!IsOwner) return;
         if (matchManager != null && matchManager.MatchEnded.Value) return;
 
-        Rotation();
-        ThrustAndBrake();
+        Rotation(_cachedRotate);
+        ThrustAndBrake(_cachedThrust);
         ClampMaxSpeed();
         CustomFriction();
     }

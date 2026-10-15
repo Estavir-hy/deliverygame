@@ -13,8 +13,15 @@ public class BuildingManager : NetworkBehaviour
     [SerializeField] private GameObject solidPrefab;
 
     private FollowMouse fm;
+    public InputManager im;
     private Plane ground = new Plane(Vector3.up, Vector3.zero);
     public bool IsBuilding => fm != null;
+
+
+
+    private InputManager PlayerInput;
+
+    private bool _inputSubscribed = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -27,34 +34,84 @@ public class BuildingManager : NetworkBehaviour
         {
             mainCam = Camera.main;
         } 
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!IsOwner) return;
+        if(!IsClient) return;      //was !isOwner
 
-        if (Input.GetKeyDown(KeyCode.B))
+        // if (Input.GetKeyDown(im.build))
+        // {
+        //     if (IsBuilding)
+        //     {
+        //         CancelBuild();
+        //     }
+        //     else
+        //     {
+        //         StartBuilding();
+        //     }
+        // }
+
+        if(!_inputSubscribed)
         {
-            if (IsBuilding)
-            {
-                CancelBuild();
-            }
-            else
-            {
-                StartBuilding();
-            }
+            TrySubscribeInput();
+            if(!_inputSubscribed) return;
         }
 
         if(IsBuilding)
         {
             UpdatePreview();
-            if(Input.GetMouseButtonDown(0))
-            {
-                TryPlaceBuilding();
-            }
+            // if(Input.GetMouseButtonDown(0))
+            // {
+            //     TryPlaceBuilding();
+            // }
         }
         
+    }
+
+    private void TrySubscribeInput()                 //new function
+    {
+
+        if (NetworkManager.Singleton.LocalClient.PlayerObject == null) return;
+
+        PlayerInput = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<InputManager>();
+        if (PlayerInput == null) return;
+
+        PlayerInput.OnBuildTogglePressed += OnBuildToggle;
+        PlayerInput.OnPlaceBuildingPressed += OnPlaceBuilding;
+        PlayerInput.OnRotateBuildingPressed += OnRotateBuilding;
+
+        _inputSubscribed = true;
+    }
+
+    private void OnBuildToggle()
+    {
+        if (IsBuilding)
+        {
+            CancelBuild();
+        }
+        else
+        {
+            StartBuilding();
+        }
+    }
+
+    private void OnPlaceBuilding()
+    {
+        if (IsBuilding)
+        {
+            TryPlaceBuilding();
+        }
+    }
+
+    private void OnRotateBuilding()
+    {
+        if (fm != null)
+        {
+            fm.HandleRotation();
+        }
     }
 
     private void StartBuilding()

@@ -25,13 +25,10 @@ public class FollowMouse : MonoBehaviour
         transform.position = pos;
     }
 
-    private void HandleRotation()
+    public void HandleRotation()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            currYRot += 90f;
-            transform.rotation = Quaternion.Euler(transform.rotation.x, currYRot, transform.rotation.y);
-        }
+        currYRot += 90f;
+        transform.rotation = Quaternion.Euler(transform.rotation.x, currYRot, transform.rotation.y);
     }
 
     private void CanPlace()

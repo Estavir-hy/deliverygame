@@ -698,7 +698,7 @@ GameObject:
   - component: {fileID: 8504811697832707958}
   - component: {fileID: 3465408766002556808}
   - component: {fileID: 2912940647022053828}
-  - component: {fileID: 8113530544217927745}
+  - component: {fileID: 3399898077803712750}
   m_Layer: 3
   m_Name: player car
   m_TagString: Player
@@ -818,6 +818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a626e930912374abbd4f3cf71234f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!135 &1540496238813357785
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -960,16 +961,26 @@ MonoBehaviour:
   mainCam: {fileID: 0}
   hollowPrefab: {fileID: 6656882478577244920, guid: 13df32c188fe8ef4eb36e7cede266c0d, type: 3}
   solidPrefab: {fileID: 8941156028934280201, guid: d7f0a00b61e2e384698a048662c3ef7f, type: 3}
-  m_Script: {fileID: 11500000, guid: 30c53440e3d66e447a58da59e2432be3, type: 3}
+  im: {fileID: 0}
+--- !u!114 &3399898077803712750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4929116386006350302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 461d97d098785434aaa076ca17782adc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::InputManager
   ShowTopMostFoldoutHeaderGroup: 1
-  highSpeedDef: 3
-  lowSpeedDef: 2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  damageCooldown: 0.6
+  build: 98
+  interact: 101
+  thrust: 119
+  brake: 115
+  rotateBuilding: 114
+  placeBuilding: 323
 --- !u!1 &5416311551677056389
 GameObject:
   m_ObjectHideFlags: 0
