@@ -13,30 +13,30 @@ public class MaterialSystem : NetworkBehaviour, IInteractable
     private float Timer;
 
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
+    // void Awake()
+    // {
+    //     if (Instance == null)
+    //     {
+    //         Instance = this;
+    //     }
+    // }
     public override void OnNetworkSpawn()
     {
-        if (!IsServer)
-            return;
-
-        MaterialNum .Value = 0;
-        Timer = 0;
+        if (IsServer)
+        {
+            MaterialNum .Value = 0;
+            Timer = 0;
+        }  
     }
 
     void Update()
     {
-        if (!IsServer)
-            return;
-
-        if (LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
+        if (IsServer)
+        {
+            if (LobbyManager.Instance != null && !LobbyManager.Instance.isStarted.Value) return;
         
         Farm();
+        }
     }
 
     private void Farm()

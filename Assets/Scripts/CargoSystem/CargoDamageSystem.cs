@@ -14,15 +14,15 @@ public class CargoDamageSystem : NetworkBehaviour
     public LayerMask groundLayer;
     public float damageCooldown = 0.6f;
 
-    private CarController _carController;
-    private PlayerCargoState _cargoState;
-    private float cooldownTimer;
+    public CarController _carController;
+    public PlayerCargoState _cargoState;
+    public float cooldownTimer;
 
 
 
-    private float[] _history = new float[3];
-    private int _hIdx;
-    private Rigidbody _rb;
+    public float[] _history = new float[3];
+    public int _hIdx;
+    public Rigidbody _rb;
 
     public override void OnNetworkSpawn()
     {
@@ -31,22 +31,15 @@ public class CargoDamageSystem : NetworkBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
+
+    
+    #region Client
+
     private void FixedUpdate()
     {
         if (!IsOwner || _rb == null) return;
         _history[_hIdx] = _rb.linearVelocity.magnitude;
         _hIdx = (_hIdx + 1) % _history.Length;
-    }
-
-
-    private void Update()
-    {
-        if(!IsServer) return;
-
-        if(cooldownTimer > 0)
-        {
-            cooldownTimer -= Time.deltaTime;
-        }
     }
 
     private float GetRecentMax()
@@ -79,6 +72,21 @@ public class CargoDamageSystem : NetworkBehaviour
         ReportCrashServerRpc(GetRecentMax());
 
     }
+    #endregion
+
+
+
+    #region Server
+
+    private void Update()
+    {
+        if(!IsServer) return;
+
+        if(cooldownTimer > 0)
+        {
+            cooldownTimer -= Time.deltaTime;
+        }
+    }
 
     [ServerRpc]
     private void ReportCrashServerRpc(float peakSpeed)
@@ -104,5 +112,5 @@ public class CargoDamageSystem : NetworkBehaviour
         return 0;
     }
 
-
+    #endregion
 }

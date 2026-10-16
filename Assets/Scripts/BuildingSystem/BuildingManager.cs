@@ -13,7 +13,6 @@ public class BuildingManager : NetworkBehaviour
     [SerializeField] private GameObject solidPrefab;
 
     private FollowMouse fm;
-    public InputManager im;
     private Plane ground = new Plane(Vector3.up, Vector3.zero);
     public bool IsBuilding => fm != null;
 

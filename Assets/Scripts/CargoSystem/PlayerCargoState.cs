@@ -11,10 +11,19 @@ public class PlayerCargoState :NetworkBehaviour
     [Header("MeshRenderer")]
     public MeshRenderer CargoIndecator;
 
-    public void FixedUpdate()
+
+    public override void OnNetworkSpawn()
     {
-        bool Isloaded = CurrentState.Value == PlayerTruckState.loaded;
-        CargoIndecator.enabled = Isloaded;
+        if (IsClient)
+        {
+            CurrentState.OnValueChanged += OnCargoStateChanged;
+            OnCargoStateChanged(PlayerTruckState.Empty, CurrentState.Value);
+        }
+    }
+
+    private void OnCargoStateChanged(PlayerTruckState oldState, PlayerTruckState newState)
+    {
+        CargoIndecator.enabled = newState == PlayerTruckState.loaded;
     }
 
     [ServerRpc]
@@ -65,6 +74,16 @@ public class PlayerCargoState :NetworkBehaviour
         {
             CurrentState.Value = PlayerTruckState.Empty;
         }
+    }
+
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsClient)
+        {
+            CurrentState.OnValueChanged -= OnCargoStateChanged;
+        }
+        base.OnNetworkDespawn();
     }
 
 }

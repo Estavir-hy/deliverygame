@@ -14,22 +14,23 @@ public class PlayerSpawn : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsServer)
-            return;
-
-        foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
+        if (IsServer)
         {
-            SpawnPlayer(client.ClientId);
-        }
+            foreach(var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                SpawnPlayer(client.ClientId);
+            }
 
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        if (!IsServer)
-            return;
-        SpawnPlayer(clientId);
+        if (IsServer)
+        {
+            SpawnPlayer(clientId);
+        }
     }
 
     private void SpawnPlayer(ulong playerID)
@@ -47,13 +48,6 @@ public class PlayerSpawn : NetworkBehaviour
 
         car.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
 
-
-        // give belongs to base(pair base with players)
-        //int index = (nextSpawnIndex - 1) % playerBases.Length;
-        //if (playerBases != null && playerBases.Length > index)
-        //{
-        //    playerBases[index].OwnerPlayerId.Value = playerID;
-        //}
         if(playerBases != null && playerBases.Length > 0)
         {
             int index = (nextSpawnIndex - 1) % playerBases.Length;
@@ -70,7 +64,7 @@ public class PlayerSpawn : NetworkBehaviour
         }
     }
 
-    public override void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         if (NetworkManager.Singleton != null)
         {
@@ -78,7 +72,7 @@ public class PlayerSpawn : NetworkBehaviour
                 OnClientConnected;
         }
 
-        base.OnDestroy();
+        base.OnNetworkDespawn();
     }
 
 }

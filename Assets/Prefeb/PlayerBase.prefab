@@ -790,6 +790,8 @@ GameObject:
   - component: {fileID: 4613070749674313706}
   - component: {fileID: 1926350597706815580}
   - component: {fileID: 6476325003683180772}
+  - component: {fileID: 1946446593285911286}
+  - component: {fileID: 2078634356986879642}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -832,7 +834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1679470011
+  GlobalObjectIdHash: 2728738112
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -898,3 +900,39 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: -12.5, y: 0.5, z: 3.75}
+--- !u!114 &1946446593285911286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8936699529241594507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba4200c15953a2b44ad3596bdc16cb66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseOwnershipClient
+  ShowTopMostFoldoutHeaderGroup: 1
+  OwnerPlayerId:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &2078634356986879642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8936699529241594507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca8c586fdeeadc442911bc1094de573d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseOwnershipServer
+  ShowTopMostFoldoutHeaderGroup: 1
+  OwnerPlayerId:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
