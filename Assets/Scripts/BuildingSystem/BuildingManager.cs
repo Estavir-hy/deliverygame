@@ -1,10 +1,11 @@
-using UnityEngine;
-using Unity.Netcode;
 using System.Xml.Serialization;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BuildingManager : NetworkBehaviour
 {
-    public static BuildingManager instance;
+    //public static BuildingManager instance;
 
     // Camera
     [SerializeField] private Camera mainCam;
@@ -13,78 +14,58 @@ public class BuildingManager : NetworkBehaviour
     [SerializeField] private GameObject solidPrefab;
 
     private FollowMouse fm;
+    //public InputManager im;
     private Plane ground = new Plane(Vector3.up, Vector3.zero);
     public bool IsBuilding => fm != null;
 
 
 
-    private InputManager PlayerInput;
+    private InputManager playerInput;
 
     private bool _inputSubscribed = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    public override void OnNetworkSpawn()
     {
-        if(instance == null)
-        {
-            instance = this;
-        }
+        if (!IsOwner) return;
+
         if (mainCam == null)
         {
             mainCam = Camera.main;
-        } 
+        }
 
+        playerInput = GetComponent<InputManager>();
+
+        if (playerInput != null)
+        {
+            playerInput.OnBuildTogglePressed += OnBuildToggle;
+            playerInput.OnPlaceBuildingPressed += OnPlaceBuilding;
+            playerInput.OnRotateBuildingPressed += OnRotateBuilding;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (playerInput != null)
+        {
+            playerInput.OnBuildTogglePressed -= OnBuildToggle;
+            playerInput.OnPlaceBuildingPressed -= OnPlaceBuilding;
+            playerInput.OnRotateBuildingPressed -= OnRotateBuilding;
+        }
+        base.OnNetworkDespawn();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!IsClient) return;      //was !isOwner
+        //if(!IsClient) return;      //was !isOwner
+        if (!IsOwner) return;         //was !isClient
 
-        // if (Input.GetKeyDown(im.build))
-        // {
-        //     if (IsBuilding)
-        //     {
-        //         CancelBuild();
-        //     }
-        //     else
-        //     {
-        //         StartBuilding();
-        //     }
-        // }
-
-        if(!_inputSubscribed)
-        {
-            TrySubscribeInput();
-            if(!_inputSubscribed) return;
-        }
-
-        if(IsBuilding)
+        if (IsBuilding)
         {
             UpdatePreview();
-            // if(Input.GetMouseButtonDown(0))
-            // {
-            //     TryPlaceBuilding();
-            // }
         }
-        
+
     }
-
-    private void TrySubscribeInput()                 //new function
-    {
-
-        if (NetworkManager.Singleton.LocalClient.PlayerObject == null) return;
-
-        PlayerInput = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<InputManager>();
-        if (PlayerInput == null) return;
-
-        PlayerInput.OnBuildTogglePressed += OnBuildToggle;
-        PlayerInput.OnPlaceBuildingPressed += OnPlaceBuilding;
-        PlayerInput.OnRotateBuildingPressed += OnRotateBuilding;
-
-        _inputSubscribed = true;
-    }
-
     private void OnBuildToggle()
     {
         if (IsBuilding)
@@ -107,7 +88,7 @@ public class BuildingManager : NetworkBehaviour
 
     private void OnRotateBuilding()
     {
-        if (fm != null)
+        if (IsBuilding)
         {
             fm.HandleRotation();
         }
@@ -137,14 +118,13 @@ public class BuildingManager : NetworkBehaviour
 
     private void TryPlaceBuilding()
     {
-        if(!fm.canPlace)
+        if (!fm.canPlace)
         {
             Debug.Log("Cannot place building here!");
             return;
         }
-        
-        RequestPlaceServerRpc(fm.transform.position, fm.transform.rotation);
 
+        RequestPlaceServerRpc(fm.transform.position, fm.transform.rotation);
         CancelBuild();
     }
     [ServerRpc]
@@ -152,13 +132,13 @@ public class BuildingManager : NetworkBehaviour
     {
         MaterialSystem pb = GetLocalPlayerBase(OwnerClientId);
 
-        if(pb == null)
+        if (pb == null)
         {
             Debug.Log($"No base found for player {OwnerClientId}!");
             return;
         }
 
-        if(pb.MaterialNum.Value < 10)
+        if (pb.MaterialNum.Value < 10)
         {
             Debug.Log($"Not enough materials to place building! Current: {pb.MaterialNum.Value}");
             return;
@@ -182,13 +162,13 @@ public class BuildingManager : NetworkBehaviour
     private MaterialSystem GetLocalPlayerBase(ulong clientId)
     {
         MaterialSystem[] allBases = FindObjectsByType<MaterialSystem>();
-        
-        if(allBases.Length == 1)
+
+        if (allBases.Length == 1)
         {
             return allBases[0];
         }
 
-        foreach(MaterialSystem pb in allBases)
+        foreach (MaterialSystem pb in allBases)
         {
             if (pb.BaseOwnerId.Value == clientId)
             {
@@ -197,12 +177,12 @@ public class BuildingManager : NetworkBehaviour
         }
 
         BaseOwnership[] allOwnerships = FindObjectsByType<BaseOwnership>();
-        foreach(BaseOwnership bo in allOwnerships)
+        foreach (BaseOwnership bo in allOwnerships)
         {
             if (bo.OwnerPlayerId.Value == clientId)
             {
-                MaterialSystem found = bo.GetComponent<MaterialSystem>() 
-                    ?? bo.GetComponentInParent<MaterialSystem>() 
+                MaterialSystem found = bo.GetComponent<MaterialSystem>()
+                    ?? bo.GetComponentInParent<MaterialSystem>()
                     ?? bo.GetComponentInChildren<MaterialSystem>();
                 if (found != null)
                 {

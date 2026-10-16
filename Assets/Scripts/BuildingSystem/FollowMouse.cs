@@ -16,7 +16,7 @@ public class FollowMouse : MonoBehaviour
     
     void Update()
     {
-        HandleRotation();
+        //HandleRotation();
         CanPlace();
     }
 
