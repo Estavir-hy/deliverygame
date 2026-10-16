@@ -97,9 +97,7 @@ public class MatchManager : NetworkBehaviour
         {
             int highestScore = results[0].Score;
 
-            var winners = results
-            .Where(player => player.Score == highestScore)
-            .Select(player => $"Player {player.ClientId + 1}").ToList();
+            var winners = results.Where(player => player.Score == highestScore).Select(player => $"Player {player.ClientId + 1}").ToList();
 
             leaderboard.AppendLine();
 
