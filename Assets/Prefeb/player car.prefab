@@ -699,6 +699,7 @@ GameObject:
   - component: {fileID: 3465408766002556808}
   - component: {fileID: 2912940647022053828}
   - component: {fileID: 3399898077803712750}
+  - component: {fileID: 4644084269548352546}
   m_Layer: 3
   m_Name: player car
   m_TagString: Player
@@ -980,6 +981,34 @@ MonoBehaviour:
   brake: 115
   rotateBuilding: 114
   placeBuilding: 323
+--- !u!114 &4644084269548352546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4929116386006350302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30c53440e3d66e447a58da59e2432be3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CargoDamageSystem
+  ShowTopMostFoldoutHeaderGroup: 1
+  highSpeedDef: 7.5
+  lowSpeedDef: 5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  damageCooldown: 0.6
+  _carController: {fileID: 0}
+  _cargoState: {fileID: 0}
+  cooldownTimer: 0
+  _history:
+  - 0
+  - 0
+  - 0
+  _hIdx: 0
+  _rb: {fileID: 0}
 --- !u!1 &5416311551677056389
 GameObject:
   m_ObjectHideFlags: 0

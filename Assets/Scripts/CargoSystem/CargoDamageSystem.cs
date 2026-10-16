@@ -54,7 +54,10 @@ public class CargoDamageSystem : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(!IsOwner) return;
+        if(!IsOwner) 
+        {
+            return;
+        }
         if(_cargoState == null || _carController == null) return;
         
         
