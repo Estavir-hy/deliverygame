@@ -1,15 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
     [Header("Match UI")]
     // [SerializeField] private TMP_Text CargoHealthText;
-
-    
     [SerializeField] private TMP_Text TimerText;
     [SerializeField] private TMP_Text ScoreText;
     [SerializeField] private TMP_Text MaterialText;
@@ -17,6 +14,10 @@ public class GameUI : MonoBehaviour
     [Header("Win UI")]
     [SerializeField] private GameObject WinScreen;
     [SerializeField] private TMP_Text WinText;
+    [SerializeField] private Button BackToMainMenuButton;
+  
+    [Header("Level Manager")]
+    [SerializeField] private LevelManager levelManager;
 
     private MatchManager matchManager;
     private PlayerScore playerScore;
@@ -35,6 +36,11 @@ public class GameUI : MonoBehaviour
             WinScreen.SetActive(false);
         }
 
+        if (BackToMainMenuButton != null)
+        {
+            BackToMainMenuButton.gameObject.SetActive(false);
+            BackToMainMenuButton.onClick.AddListener(OnBackToMainMenuClicked);
+        }
     }
 
     // Update is called once per frame
@@ -148,6 +154,21 @@ public class GameUI : MonoBehaviour
         {
             WinText.text = matchManager.LeaderboardText.Value.ToString();
         }
+
+        if (BackToMainMenuButton != null)
+        {
+            BackToMainMenuButton.gameObject.SetActive(true);
+        }
     }
 
+    private void OnBackToMainMenuClicked()
+    {
+        if (levelManager == null)
+        {
+            Debug.LogError("LevelManager reference is missing.");
+            return;
+        }
+
+        levelManager.ReturnToMainMenu();
+    }
 }
