@@ -47389,6 +47389,18 @@ MonoBehaviour:
   TimerText: {fileID: 229663220}
   ScoreText: {fileID: 1014476599}
   MaterialText: {fileID: 56550416}
+  TimerStartColor: {r: 0, g: 1, b: 0, a: 1}
+  TimerHalfwayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  TimerEndColor: {r: 1, g: 0, b: 0, a: 1}
+  EnableTimerFlashing: 1
+  FlashingTimeStart: 20
+  FlashSpeed: 2
+  EnableMaterialFlashing: 1
+  MaterialFlashSpeed: 2
+  MaterialFlashDuration: 0.5
+  EnableScoreFlashing: 1
+  ScoreFlashSpeed: 4
+  ScoreFlashDuration: 0.5
   WinScreen: {fileID: 1294921753}
   WinText: {fileID: 1702240901}
   BackToMainMenuButton: {fileID: 2087984847}
