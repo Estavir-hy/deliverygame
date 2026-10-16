@@ -11,6 +11,33 @@ public class GameUI : MonoBehaviour
     [SerializeField] private TMP_Text ScoreText;
     [SerializeField] private TMP_Text MaterialText;
 
+    [Header("Timer Color")]
+    [SerializeField] private Color TimerStartColor = Color.green;
+    [SerializeField] private Color TimerHalfwayColor = Color.yellow;
+    [SerializeField] private Color TimerEndColor = Color.red;
+
+    [Header("Timer Warning")]
+    [SerializeField] private bool EnableTimerFlashing = true;
+    [SerializeField] private float FlashingTimeStart = 20f;
+    [SerializeField] private float FlashSpeed = 2f;
+
+    private float timerFlashElapsed = 0f;
+
+    [Header("Material Notification")]
+    [SerializeField] private bool EnableMaterialFlashing = true;
+    [SerializeField] private float MaterialFlashSpeed = 2f;
+    [SerializeField] private float MaterialFlashDuration = 0.5f;
+    private int previousMaterialCount = -1;
+    private float materialFlashTimer = 0f;
+    private float materialFlashElapsed = 0f;
+
+    [Header("Score Notification")]
+    [SerializeField] private bool EnableScoreFlashing = true;
+    [SerializeField] private float ScoreFlashSpeed = 4f;
+    [SerializeField] private float ScoreFlashDuration = 0.5f;
+    private int previousScore = -1;
+    private float scoreFlashTimer = 0f;
+
     [Header("Win UI")]
     [SerializeField] private GameObject WinScreen;
     [SerializeField] private TMP_Text WinText;
@@ -123,6 +150,39 @@ public class GameUI : MonoBehaviour
         int seconds = Mathf.FloorToInt(time % 60f);
 
         TimerText.text = $"{minutes:00}:{seconds:00}";
+
+        float matchLength = matchManager.MatchLengthValue;
+
+        if (matchLength <= 0f)
+            return;
+
+        float timeRemaining = time / matchLength;
+
+        // Lerp color from Green to Yellow to Red
+        if (timeRemaining > 0.5f)
+        {
+            float progress = Mathf.InverseLerp(1f, 0.5f, timeRemaining);
+            TimerText.color = Color.Lerp(TimerStartColor, TimerHalfwayColor, progress);
+        }
+        else
+        {
+            float progress = Mathf.InverseLerp(0.5f, 0f, timeRemaining);
+            TimerText.color = Color.Lerp(TimerHalfwayColor, TimerEndColor, progress);
+        }
+
+        // Critical time warning
+        if (time <= FlashingTimeStart && EnableTimerFlashing)
+        {
+            timerFlashElapsed += Time.deltaTime;
+            float flash = Mathf.PingPong(timerFlashElapsed * FlashSpeed, 1f);
+            TimerText.alpha = Mathf.Lerp(0.25f, 1f, flash);
+               
+        }
+        else
+        {
+            timerFlashElapsed = 0f;
+            TimerText.alpha = 1f;
+        }
     }
 
     private void UpdateScore()
@@ -130,15 +190,81 @@ public class GameUI : MonoBehaviour
         if (playerScore == null)
             return;
 
-        ScoreText.text = $"Score: {playerScore.Score.Value}";
+        int currentScore = playerScore.Score.Value;
+
+        ScoreText.SetText("Score: {0}", currentScore);
+
+        // Initialize without flashing when the player is first found.
+        if (previousScore == -1)
+        {
+            previousScore = currentScore;
+            return;
+        }
+
+        // Trigger a flash when the score increases.
+        if (currentScore > previousScore)
+        {
+            if (EnableScoreFlashing)
+            {
+                scoreFlashTimer = ScoreFlashDuration;
+            }
+        }
+
+        previousScore = currentScore;
+
+        // Animate the flash.
+        if (scoreFlashTimer > 0f && EnableScoreFlashing)
+        {
+            scoreFlashTimer -= Time.deltaTime;
+            float flash = Mathf.PingPong(Time.time * ScoreFlashSpeed, 1f);
+            ScoreText.alpha = Mathf.Lerp(0.25f, 1f, flash);
+        }
+        else
+        {
+            scoreFlashTimer = 0f;
+            ScoreText.alpha = 1f;
+        }
     }
 
     private void UpdateMaterialNumber()
     {
         if (materialSystem == null)
             return;
-        
-        MaterialText.text = $"Material: {materialSystem.MaterialNum.Value}";
+
+        int currentMaterialCount = materialSystem.MaterialNum.Value;
+
+        MaterialText.SetText("Material: {0}", currentMaterialCount);
+
+        // Initialize without flashing when the base is first found.
+        if (previousMaterialCount == -1)
+        {
+            previousMaterialCount = currentMaterialCount;
+            return;
+        }
+
+        // Trigger a flash when materials increase.
+        if (currentMaterialCount > previousMaterialCount)
+        {
+            materialFlashTimer = MaterialFlashDuration;
+            materialFlashElapsed = 0f;
+        }
+
+        previousMaterialCount = currentMaterialCount;
+
+        // Animate the flash.
+        if (materialFlashTimer > 0f && EnableMaterialFlashing)
+        {
+            materialFlashTimer -= Time.deltaTime;
+            materialFlashElapsed += Time.deltaTime;
+            float flash = Mathf.PingPong(Time.time * MaterialFlashSpeed, 1f);
+            MaterialText.alpha = Mathf.Lerp(0.25f, 1f, flash);
+        }
+        else
+        {
+            materialFlashTimer = 0f;
+            materialFlashElapsed = 0f;
+            MaterialText.alpha = 1f;
+        }
     }
 
     private void ShowWinScreen()

@@ -7,7 +7,8 @@ using Unity.Collections;
 public class MatchManager : NetworkBehaviour
 {
     [Header("Match Setting")]
-    [SerializeField] private float MatchLength = 20f;
+    [SerializeField] private float MatchLength = 120f;
+    public float MatchLengthValue => MatchLength;
 
     public NetworkVariable<FixedString512Bytes> LeaderboardText = new NetworkVariable<FixedString512Bytes>(new FixedString512Bytes(""), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
