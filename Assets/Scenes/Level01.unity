@@ -15259,7 +15259,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 519513527}
-  - component: {fileID: 519513526}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -15267,18 +15266,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &519513526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519513525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71a9fa8a3cea3174885662ca6b456152, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Level
 --- !u!4 &519513527
 Transform:
   m_ObjectHideFlags: 0
