@@ -16,7 +16,14 @@ public class MainMenu : MonoBehaviour
         response.Approved = true;
         response.CreatePlayerObject = false;
     }
-
+    private void Start()
+    {
+        // If we just arrived from a match, kill the session so ports are freed
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+    }
     public void HostGame()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
@@ -34,7 +41,8 @@ public class MainMenu : MonoBehaviour
     public void JoinGame()
     {
         var transport =NetworkManager.Singleton.GetComponent<UnityTransport>();
-        string targetIP = string.IsNullOrEmpty(ipField.text) ? "127.0.0.1" : ipField.text;
+
+        string targetIP = (ipField != null && !string.IsNullOrEmpty(ipField.text)) ? ipField.text.Trim() : "127.0.0.1";
 
         transport.SetConnectionData(targetIP, 7777);
         NetworkManager.Singleton.StartClient();

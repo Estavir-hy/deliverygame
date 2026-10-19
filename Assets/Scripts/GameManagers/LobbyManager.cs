@@ -1,18 +1,18 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
-using UnityEngine.Analytics;
 
 public class LobbyManager : NetworkBehaviour
 {
     [SerializeField] private Text playerCountText;
     [SerializeField] private GameObject UIPanel;
-    [SerializeField] private GameObject isStartedButton; 
+    [SerializeField] private GameObject isStartedButton;
 
-    // NetworkVariable to track the number of connected players
-    private NetworkVariable<int> playerCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    // NetworkVariable to track if the game has started
-    public NetworkVariable<bool> isStarted = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<int> playerCount = new NetworkVariable<int>(
+        0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<bool> isStarted = new NetworkVariable<bool>(
+        false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public static LobbyManager Instance { get; private set; }
 
@@ -30,37 +30,70 @@ public class LobbyManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Update the player count UI when the value changes
         playerCount.OnValueChanged += UpdatePlayerCountUI;
         isStarted.OnValueChanged += OnGameStarted;
 
-        if(IsServer)
+        if (IsServer)
         {
             UpdateCount();
-            NetworkManager.Singleton.OnClientConnectedCallback += (id) => UpdateCount();
-            NetworkManager.Singleton.OnClientDisconnectCallback += (id) => UpdateCount();
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientChanged;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientChanged;
         }
-        // Only show the start button for the host
+
+        UpdatePlayerCountUI(0, playerCount.Value);
+
         if (isStartedButton != null)
         {
             isStartedButton.SetActive(IsServer);
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        playerCount.OnValueChanged -= UpdatePlayerCountUI;
+        isStarted.OnValueChanged -= OnGameStarted;
+
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientChanged;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientChanged;
+        }
+
+        base.OnNetworkDespawn();
+    }
+
+    public override void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+        base.OnDestroy();
+    }
+
+    private void OnClientChanged(ulong clientId)
+    {
+        if (!IsServer || !IsSpawned) return;
+        UpdateCount();
+    }
+
     private void UpdateCount()
     {
+        if (NetworkManager.Singleton == null) return;
         playerCount.Value = NetworkManager.Singleton.ConnectedClients.Count;
     }
 
     private void UpdatePlayerCountUI(int oldCount, int newCount)
     {
-        playerCountText.text = $"{newCount} / 4 Players Connected";
+        if (playerCountText != null)
+        {
+            playerCountText.text = $"{newCount} / 4 Players Connected";
+        }
     }
 
-    // Called by the UI button to start the game, only the host can trigger this
     public void StartGameHostButton()
     {
-        if(IsServer)
+        if (IsServer)
         {
             isStarted.Value = true;
         }
@@ -70,16 +103,16 @@ public class LobbyManager : NetworkBehaviour
     {
         if (isNowStarted)
         {
-            // Hide the UI panel when the game starts
-            UIPanel.SetActive(false);
+            if (UIPanel != null)
+            {
+                UIPanel.SetActive(false);
+            }
 
             CameraFollow cameraFollow = FindAnyObjectByType<CameraFollow>();
-            if(cameraFollow != null && NetworkManager.Singleton.LocalClient.PlayerObject != null)
+            if (cameraFollow != null && NetworkManager.Singleton.LocalClient.PlayerObject != null)
             {
                 cameraFollow.TargetCar = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
             }
         }
     }
-
-
 }

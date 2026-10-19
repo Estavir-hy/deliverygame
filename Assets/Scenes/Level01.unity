@@ -50830,7 +50830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchManager
   ShowTopMostFoldoutHeaderGroup: 1
-  MatchLength: 60
+  MatchLength: 12
   LeaderboardText:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0

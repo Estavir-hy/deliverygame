@@ -24,18 +24,18 @@ public class LevelManager : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        if (NetworkManager.Singleton == null)
-        {
-            Debug.LogError("NetworkManager not found.");
-            return;
-        }
+        if (NetworkManager.Singleton == null) return;
 
-        if (!NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
-            Debug.LogError("Only the host can return everyone to the main menu.");
-            return;
+            // Host pulls EVERY connected player into MainMenu
+            NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
-
-        NetworkManager.Singleton.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        else
+        {
+            // If a client presses it, they disconnect locally and leave
+            NetworkManager.Singleton.Shutdown();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
     }
 }
