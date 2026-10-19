@@ -1,0 +1,13 @@
+{
+    "name": "Tests",
+    "references": [
+        "Game.Runtime",
+        "Unity.Netcode.Runtime"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ]
+}

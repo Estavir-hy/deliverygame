@@ -11,7 +11,7 @@ public class BuildingManager : NetworkBehaviour
     [SerializeField] private Camera mainCam;
     // Prefabs
     [SerializeField] private GameObject hollowPrefab;
-    [SerializeField] private GameObject solidPrefab;
+    [SerializeField] public GameObject solidPrefab;
 
     private FollowMouse fm;
     //public InputManager im;
@@ -128,7 +128,7 @@ public class BuildingManager : NetworkBehaviour
         CancelBuild();
     }
     [ServerRpc]
-    private void RequestPlaceServerRpc(Vector3 position, Quaternion rotation)
+    public void RequestPlaceServerRpc(Vector3 position, Quaternion rotation)
     {
         MaterialSystem pb = GetLocalPlayerBase(OwnerClientId);
 

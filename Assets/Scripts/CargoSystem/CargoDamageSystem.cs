@@ -106,7 +106,7 @@ public class CargoDamageSystem : NetworkBehaviour
         }
     }
 
-    private int calculateDamage(float speed)
+    public int calculateDamage(float speed)
     {
         if(speed >= highSpeedDef)
             return 2;
